@@ -2,7 +2,9 @@ package main
 
 import (
 	"Oracle/contracts"
+	"context"
 	"crypto/ecdsa"
+	"errors"
 	"fmt"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -10,13 +12,15 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"io/ioutil"
+	"log"
 	_ "log"
+	"math/big"
 	"strings"
 )
 
 func main() {
-	contractAddress := "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
-	lendingPoolAddress := "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+	contractAddress := "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+	lendingPoolAddress := "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
 	client, err := ethclient.Dial("http://localhost:8545")
 	if err != nil {
 		// Handle error
@@ -40,33 +44,100 @@ func main() {
 	}
 
 	fmt.Println(contractInstance)
-	privateKey := "0xde9be858da4a475276426320d5e9262ecfc3ba460bfac56360bfa6c4c28b4ee0"
-	fromAddress, err := GetAddressFromPrivateKey(privateKey)
+	privateKey := "0x701b615bbdfb9de65240bc28bd21bbc0d996645a3dd57e7b12bc2bdf6f192c82"
+	_, err = GetAddressFromPrivateKey(privateKey)
 	if err != nil {
 		// Handle error
 	}
-	signer, err := getSigner(privateKey)
-	if err != nil {
-		// Handle error
-	}
-
-	resultOfSet, err := contractInstance.SetLendingPoolAddress(&bind.TransactOpts{
-		From:   fromAddress,
-		Value:  nil,
-		Signer: signer,
-	}, common.HexToAddress(lendingPoolAddress))
+	_privateKey, _, _publicAddress, _ := GenerateKeypairFromPrivateKeyHex(privateKey)
+	res, _ := BuildTransactionOptions(client, _publicAddress, _privateKey, 300000)
+	fmt.Println(res)
+	resultOfSet, err := contractInstance.SetLendingPoolAddress(res, common.HexToAddress(lendingPoolAddress))
 	if err != nil {
 		// Handle error
 		fmt.Println(err)
 	}
 	fmt.Println(resultOfSet)
 	result, err := contractInstance.GetLendingPoolAddress(&bind.CallOpts{
-		From: fromAddress,
+		From:    _publicAddress,
+		Context: context.Background(),
 	})
 	if err != nil {
 		// Handle error
+		fmt.Println(err)
 	}
 	fmt.Println(result)
+}
+
+func calculateNonce(client *ethclient.Client, address common.Address) (uint64, error) {
+	nonce, err := client.PendingNonceAt(context.Background(), address)
+	if err != nil {
+		return 0, err
+	}
+
+	return nonce, nil
+}
+
+func BuildTransactionOptions(client *ethclient.Client, fromAddress common.Address, prvKey *ecdsa.PrivateKey, gasLimit uint64) (*bind.TransactOpts, error) {
+
+	// Retrieve the chainID
+	chainID, cIDErr := client.ChainID(context.Background())
+
+	if cIDErr != nil {
+		return nil, cIDErr
+	}
+
+	// Retrieve suggested gas price
+	gasPrice, gErr := client.SuggestGasPrice(context.Background())
+
+	if gErr != nil {
+		return nil, gErr
+	}
+
+	// Create empty options object
+	txOptions, txOptErr := bind.NewKeyedTransactorWithChainID(prvKey, chainID)
+
+	if txOptErr != nil {
+		return nil, txOptErr
+	}
+
+	txOptions.Value = big.NewInt(0) // in wei
+	txOptions.GasLimit = gasLimit   // in units
+	txOptions.GasPrice = gasPrice
+
+	return txOptions, nil
+}
+
+func GenerateKeypairFromPrivateKeyHex(privateKeyHex string) (*ecdsa.PrivateKey, *ecdsa.PublicKey, common.Address, error) {
+
+	log.Println("Generating the keypair...")
+
+	// If hex string has "0x" at the start discard it
+	if privateKeyHex[:2] == "0x" {
+		privateKeyHex = privateKeyHex[2:]
+	}
+
+	// Convert hex key to a private key object
+	privateKey, privateKeyErr := crypto.HexToECDSA(privateKeyHex)
+
+	if privateKeyErr != nil {
+		return nil, nil, common.Address{}, privateKeyErr
+	}
+
+	// Generate the public key using the private key
+	publicKey := privateKey.Public()
+
+	// Cast crypto.Publickey object to the ecdsa.PublicKey object
+	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+
+	if !ok {
+		return nil, nil, common.Address{}, errors.New("error casting public key to ECDSA")
+	}
+
+	// Convert publickey to a address
+	pubkeyAsAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
+
+	return privateKey, publicKeyECDSA, pubkeyAsAddress, nil
 }
 
 func GetAddressFromPrivateKey(privateKey string) (common.Address, error) {
