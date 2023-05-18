@@ -18,7 +18,7 @@ import (
 	"strings"
 )
 
-func main() {
+func runContract() {
 	lendingPoolAddress, err, contractInstance, _publicAddress, res := createFunctionRequirements()
 	resultOfSet, err := contractInstance.SetLendingPoolAddress(res, common.HexToAddress(lendingPoolAddress))
 	if err != nil {
