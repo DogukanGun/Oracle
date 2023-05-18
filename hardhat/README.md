@@ -11,8 +11,15 @@ Contract verified here: https://sepolia.etherscan.io/address/0x2C10EDb2480322B68
 
 The following scripts were run to deploy and verify the contract to the Sepolia testnet:
 ```
-npx hardhat run --network sepolia scripts/deploy.js
-npx hardhat verify --network sepolia 0x2C10EDb2480322B6800Fe479d32b5A5e436d3b33
+npx hardhat run scripts/deploy.js --network localhost
 ```
 ## Change .env_example to .env 
 Change it with your credentials and change the name of it. Instructions are given inside the .env_example file.
+
+## Creating Abi in Go
+
+```
+solc --abi Store.sol -o build
+abigen --abi=./build/Store.abi --pkg=store --out=Store.go
+```
+

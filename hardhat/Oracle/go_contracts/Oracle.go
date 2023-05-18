@@ -39,7 +39,7 @@ var OracleMetaData = &bind.MetaData{
 // Deprecated: Use OracleMetaData.ABI instead.
 var OracleABI = OracleMetaData.ABI
 
-// OracleBin is the compiled bytecode used for deploying new contracts.
+// OracleBin is the compiled bytecode used for deploying new go_contracts.
 // Deprecated: Use OracleMetaData.Bin instead.
 var OracleBin = OracleMetaData.Bin
 

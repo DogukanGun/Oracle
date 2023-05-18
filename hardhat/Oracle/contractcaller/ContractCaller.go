@@ -1,7 +1,7 @@
-package main
+package contractcaller
 
 import (
-	"Oracle/contracts"
+	"Oracle/go_contracts"
 	"context"
 	"crypto/ecdsa"
 	"errors"
@@ -19,7 +19,10 @@ import (
 )
 
 func runContract() {
-	lendingPoolAddress, err, contractInstance, _publicAddress, res := createFunctionRequirements()
+	oracleAddress := "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+	privateKey := "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
+	lendingPoolAddress := "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+	err, contractInstance, _publicAddress, res := CreateFunctionRequirementsForOracle(oracleAddress, privateKey)
 	resultOfSet, err := contractInstance.SetLendingPoolAddress(res, common.HexToAddress(lendingPoolAddress))
 	if err != nil {
 		// Handle error
@@ -37,15 +40,43 @@ func runContract() {
 	fmt.Println(result)
 }
 
-func createFunctionRequirements() (string, error, *oracle.Oracle, common.Address, *bind.TransactOpts) {
-	contractAddress := "0x5FbDB2315678afecb367f032d93F642f64180aa3"
-	lendingPoolAddress := "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+func CreateFunctionRequirementsForWallet(oracleAddress string, privateKey string) (error, *oracle.Wallet, common.Address, *bind.TransactOpts) {
 	client, err := ethclient.Dial("http://localhost:8545")
 	if err != nil {
 		// Handle error
 	}
 
-	address := common.HexToAddress(contractAddress)
+	address := common.HexToAddress(oracleAddress)
+	abiFile, err := ioutil.ReadFile("Wallet.abi")
+	contractAbi, err := abi.JSON(strings.NewReader(string(abiFile)))
+	if err != nil {
+		// Handle error
+		fmt.Println(err)
+	}
+
+	fmt.Println(address)
+	fmt.Println(client)
+	fmt.Println(contractAbi)
+
+	contractInstance, err := oracle.NewWallet(address, client)
+	if err != nil {
+		// Handle error
+	}
+
+	fmt.Println(contractInstance)
+	_privateKey, _, _publicAddress, _ := GenerateKeypairFromPrivateKeyHex(privateKey)
+	res, _ := BuildTransactionOptions(client, _publicAddress, _privateKey, 300000)
+	fmt.Println(res)
+	return err, contractInstance, _publicAddress, res
+}
+
+func CreateFunctionRequirementsForOracle(oracleAddress string, privateKey string) (error, *oracle.Oracle, common.Address, *bind.TransactOpts) {
+	client, err := ethclient.Dial("http://localhost:8545")
+	if err != nil {
+		// Handle error
+	}
+
+	address := common.HexToAddress(oracleAddress)
 	abiFile, err := ioutil.ReadFile("Oracle.abi")
 	contractAbi, err := abi.JSON(strings.NewReader(string(abiFile)))
 	if err != nil {
@@ -63,15 +94,10 @@ func createFunctionRequirements() (string, error, *oracle.Oracle, common.Address
 	}
 
 	fmt.Println(contractInstance)
-	privateKey := "0x701b615bbdfb9de65240bc28bd21bbc0d996645a3dd57e7b12bc2bdf6f192c82"
-	_, err = GetAddressFromPrivateKey(privateKey)
-	if err != nil {
-		// Handle error
-	}
 	_privateKey, _, _publicAddress, _ := GenerateKeypairFromPrivateKeyHex(privateKey)
 	res, _ := BuildTransactionOptions(client, _publicAddress, _privateKey, 300000)
 	fmt.Println(res)
-	return lendingPoolAddress, err, contractInstance, _publicAddress, res
+	return err, contractInstance, _publicAddress, res
 }
 
 func BuildTransactionOptions(client *ethclient.Client, fromAddress common.Address, prvKey *ecdsa.PrivateKey, gasLimit uint64) (*bind.TransactOpts, error) {
