@@ -19,6 +19,25 @@ import (
 )
 
 func main() {
+	lendingPoolAddress, err, contractInstance, _publicAddress, res := createFunctionRequirements()
+	resultOfSet, err := contractInstance.SetLendingPoolAddress(res, common.HexToAddress(lendingPoolAddress))
+	if err != nil {
+		// Handle error
+		fmt.Println(err)
+	}
+	fmt.Println(resultOfSet)
+	result, err := contractInstance.GetLendingPoolAddress(&bind.CallOpts{
+		From:    _publicAddress,
+		Context: context.Background(),
+	})
+	if err != nil {
+		// Handle error
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+}
+
+func createFunctionRequirements() (string, error, *oracle.Oracle, common.Address, *bind.TransactOpts) {
 	contractAddress := "0x5FbDB2315678afecb367f032d93F642f64180aa3"
 	lendingPoolAddress := "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
 	client, err := ethclient.Dial("http://localhost:8545")
@@ -52,30 +71,7 @@ func main() {
 	_privateKey, _, _publicAddress, _ := GenerateKeypairFromPrivateKeyHex(privateKey)
 	res, _ := BuildTransactionOptions(client, _publicAddress, _privateKey, 300000)
 	fmt.Println(res)
-	resultOfSet, err := contractInstance.SetLendingPoolAddress(res, common.HexToAddress(lendingPoolAddress))
-	if err != nil {
-		// Handle error
-		fmt.Println(err)
-	}
-	fmt.Println(resultOfSet)
-	result, err := contractInstance.GetLendingPoolAddress(&bind.CallOpts{
-		From:    _publicAddress,
-		Context: context.Background(),
-	})
-	if err != nil {
-		// Handle error
-		fmt.Println(err)
-	}
-	fmt.Println(result)
-}
-
-func calculateNonce(client *ethclient.Client, address common.Address) (uint64, error) {
-	nonce, err := client.PendingNonceAt(context.Background(), address)
-	if err != nil {
-		return 0, err
-	}
-
-	return nonce, nil
+	return lendingPoolAddress, err, contractInstance, _publicAddress, res
 }
 
 func BuildTransactionOptions(client *ethclient.Client, fromAddress common.Address, prvKey *ecdsa.PrivateKey, gasLimit uint64) (*bind.TransactOpts, error) {
@@ -155,14 +151,4 @@ func GetAddressFromPrivateKey(privateKey string) (common.Address, error) {
 	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
 
 	return fromAddress, nil
-}
-
-func getSigner(privateKeyStr string) (bind.SignerFn, error) {
-	privateKey, err := crypto.HexToECDSA(privateKeyStr)
-	if err != nil {
-		return nil, err
-	}
-
-	signer := bind.NewKeyedTransactor(privateKey)
-	return signer.Signer, nil
 }
