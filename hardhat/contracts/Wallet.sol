@@ -4,85 +4,110 @@ pragma solidity 0.8.19;
 
 contract Wallet{
 
-    struct Asset {
-        string sign;
+    struct AssetPerChain {
+        uint128 sign;
+        uint128 chainId;
+        uint256 amount;
+    }
+
+    struct Asset{
+        uint128 sign;
         uint256 amount;
     }
 
     struct UserWallet {
-        string passwordSaver;
-        string password;
         uint256 assetCount;
-        mapping(uint256 => Asset) assets;
+        uint256 assetCountWithoutChain;
+        mapping(uint256 => AssetPerChain) assets;
+        mapping(uint256 => Asset) assetsWithoutChain;
+
     }
 
     mapping(address => UserWallet) public userWallets;
 
-    function createUserAddress(string memory passwordSaver,string memory password, string memory username) public returns(address){
-        address userAddress = generateAddress(username);
-        UserWallet storage userWallet = userWallets[userAddress];
-        userWallet.password = password;
-        userWallet.passwordSaver = passwordSaver;
-        userWallet.assetCount = 0;
-        return userAddress;
-    }
-
-    function getUserAssets(address userAddresss) external view returns (Asset[] memory) {
+    function getUserAssets(address userAddresss) external view returns (AssetPerChain[] memory) {
         UserWallet storage userWallet = userWallets[userAddresss];
-        Asset[] memory assets = new Asset[](userWallet.assetCount);
+        AssetPerChain[] memory assets = new AssetPerChain[](userWallet.assetCount);
         for (uint256 i = 0; i < userWallet.assetCount; i++) {
             assets[i] = userWallet.assets[i];
         }
         return assets;
     }
 
-    function addNewAsset(address userAddress,string calldata sign) public {
+    function getUserAssetsWithoutchain(address userAddresss) external view returns (Asset[] memory) {
+        UserWallet storage userWallet = userWallets[userAddresss];
+        Asset[] memory assets = new Asset[](userWallet.assetCountWithoutChain);
+        for (uint256 i = 0; i < userWallet.assetCountWithoutChain; i++) {
+            assets[i] = userWallet.assetsWithoutChain[i];
+        }
+        return assets;
+    }
+
+    function addNewAsset(address userAddress,uint128 sign,uint128 chainId) public {
         UserWallet storage userWallet = userWallets[userAddress];
-        if(!isAssetExist(userAddress,sign)){
+        require(!isAssetExistByChain(userAddress,sign,chainId),"Asset is already exist");
+        AssetPerChain memory assetPerChain;
+        assetPerChain.sign = sign;
+        assetPerChain.amount = 0;
+        assetPerChain.chainId = chainId;
+        userWallet.assets[userWallet.assetCount] = assetPerChain;
+        userWallet.assetCount = userWallet.assetCount + 1;
+        if(isAssetNotExist(userAddress,sign)){
             Asset memory asset;
             asset.sign = sign;
             asset.amount = 0;
-            userWallet.assets[userWallet.assetCount] = asset;
-            userWallet.assetCount = userWallet.assetCount + 1;
+            userWallet.assetsWithoutChain[userWallet.assetCountWithoutChain] = asset;
+            userWallet.assetCountWithoutChain = userWallet.assetCountWithoutChain + 1;
         }
     }
 
-    function depositAsset(address userAddress,string memory sign,uint256 amount) public {
+    function depositAsset(address userAddress,uint128 sign,uint256 amount,uint128 chainId) public {
         UserWallet storage userWallet = userWallets[userAddress];
         for (uint256 i = 0; i < userWallet.assetCount; i++) {
-            if(compareStrings(userWallet.assets[i].sign,sign)){
-                userWallet.assets[i].amount = userWallet.assets[i].amount + amount; 
+            if(userWallet.assets[i].sign == sign && userWallet.assets[i].chainId == chainId){
+                userWallet.assets[i].amount = userWallet.assets[i].amount + amount;
+            }
+        }
+        for (uint256 i = 0; i < userWallet.assetCountWithoutChain; i++) {
+            if(userWallet.assetsWithoutChain[i].sign == sign){
+                userWallet.assetsWithoutChain[i].amount = userWallet.assetsWithoutChain[i].amount + amount;
             }
         }
     }
 
-    function withdrawAsset(address userAddress,string memory sign,uint256 amount) public {
+    function withdrawAsset(address userAddress,uint128 sign,uint256 amount) public {
         UserWallet storage userWallet = userWallets[userAddress];
         for (uint256 i = 0; i < userWallet.assetCount; i++) {
-            if(compareStrings(userWallet.assets[i].sign,sign)){
-                userWallet.assets[i].amount = userWallet.assets[i].amount - amount; 
+            if(userWallet.assets[i].sign == sign){
+                userWallet.assets[i].amount = userWallet.assets[i].amount - amount;
+            }
+        }
+        for (uint256 i = 0; i < userWallet.assetCountWithoutChain; i++) {
+            if(userWallet.assetsWithoutChain[i].sign == sign){
+                userWallet.assetsWithoutChain[i].amount = userWallet.assetsWithoutChain[i].amount - amount;
             }
         }
     }
 
-    function isAssetExist(address userAddress,string memory sign) public  view returns(bool){
+    function isAssetExistByChain(address userAddress,uint128 sign,uint128 chainId) public  view returns(bool){
         UserWallet storage userWallet = userWallets[userAddress];
         for (uint256 i = 0; i < userWallet.assetCount; i++) {
-            if(compareStrings(userWallet.assets[i].sign,sign)){
+            if(userWallet.assets[i].sign == sign && chainId == userWallet.assets[i].chainId){
                 return true;
             }
         }
         return false;
     }
 
-    function compareStrings(string memory str1, string memory str2) public pure returns (bool) {
-        return keccak256(abi.encodePacked(str1)) == keccak256(abi.encodePacked(str2));
-    }
 
-    function generateAddress(string memory username) private pure returns (address) {
-        bytes memory usernameBytes = bytes(username);
-        address generatedAddress = address(uint160(uint256(keccak256(usernameBytes))));
-        return generatedAddress;
+    function isAssetNotExist(address userAddress,uint128 sign) public  view returns(bool){
+        UserWallet storage userWallet = userWallets[userAddress];
+        for (uint256 i = 0; i < userWallet.assetCountWithoutChain; i++) {
+            if(userWallet.assetsWithoutChain[i].sign == sign){
+                return false;
+            }
+        }
+        return true;
     }
 
 

@@ -19,7 +19,8 @@ Change it with your credentials and change the name of it. Instructions are give
 ## Creating Abi in Go
 
 ```
-solc --abi Store.sol -o build
-abigen --abi=./build/Store.abi --pkg=store --out=Store.go
+
+solc --abi --bin Store.sol -o build
+abigen --bin=./build/Store.bin --abi=./build/Store.abi --pkg=store --out=Store.go
 ```
 

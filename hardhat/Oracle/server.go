@@ -2,6 +2,7 @@ package main
 
 import (
 	"Oracle/controller"
+	"Oracle/subscriber"
 	"github.com/gin-gonic/gin"
 )
 
@@ -29,6 +30,11 @@ func main() {
 			wallet.POST("/withdraw", walletController.Withdraw)
 		}
 
+		networkListener := v1.Group("/listener")
+		{
+			networkListenerController := new(subscriber.NetworkListenerController)
+			networkListener.POST("/start", networkListenerController.ListenNetwork)
+		}
 		//TODO Lending pool routes
 	}
 

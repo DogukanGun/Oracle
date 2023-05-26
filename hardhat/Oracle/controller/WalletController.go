@@ -23,21 +23,26 @@ func (h *WalletController) CreateUserAddress(c *gin.Context) {
 	userHash := requestBody.UserHash
 	username := requestBody.Username
 	password := requestBody.Password
-	err, contractInstance, _, res := contractcaller.CreateFunctionRequirementsForWallet(walletAddress, "0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a")
+	err, contractInstance, _, res, client, _ := contractcaller.CreateFunctionRequirementsForWallet(walletAddress, "0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a")
 	resultOfSet, err := contractInstance.CreateUserAddress(res, userHash, password, username)
+	receipt, err := client.TransactionReceipt(context.Background(), resultOfSet.Hash())
+	fmt.Println(receipt.Status)
+	fmt.Println(receipt.Logs[0].Topics)
+	fmt.Println(common.BytesToAddress(receipt.Logs[0].Data))
 	if err != nil {
-		// Handle error
-		fmt.Println(err)
+		// Handle the error
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
-	fmt.Println(resultOfSet)
+	fmt.Println(resultOfSet.Data())
 
-	c.JSON(200, gin.H{"message": fmt.Sprintf("Res = %s", resultOfSet)})
+	c.JSON(200, gin.H{"message": fmt.Sprintf("Res =")})
 }
 
 func (h *WalletController) GetUserAssets(c *gin.Context) {
 	userAddress := c.Param("userAddress")
 	walletAddress := "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
-	err, contractInstance, _publicAddress, _ := contractcaller.CreateFunctionRequirementsForWallet(walletAddress, "0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a")
+	err, contractInstance, _publicAddress, _, _, _ := contractcaller.CreateFunctionRequirementsForWallet(walletAddress, "0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a")
 	resultOfSet, err := contractInstance.GetUserAssets(&bind.CallOpts{
 		From:    _publicAddress,
 		Context: context.Background(),

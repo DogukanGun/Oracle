@@ -695,8 +695,8 @@
       ]
     },
     "/Users/dogukangundogan/Desktop/Oracle/hardhat/contracts/Wallet.sol": {
-      "lastModificationDate": 1684422608887,
-      "contentHash": "c0e97722f656d6590f4b0dc673ecdfd2",
+      "lastModificationDate": 1684667429622,
+      "contentHash": "cec045b51f9dfbeebe36c3d04498d9e3",
       "sourceName": "contracts/Wallet.sol",
       "solcConfig": {
         "version": "0.8.19",

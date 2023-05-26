@@ -40,34 +40,32 @@ func runContract() {
 	fmt.Println(result)
 }
 
-func CreateFunctionRequirementsForWallet(oracleAddress string, privateKey string) (error, *oracle.Wallet, common.Address, *bind.TransactOpts) {
+func CreateFunctionRequirementsForWallet(oracleAddress string, privateKey string) (error, *oracle.Wallet, common.Address, *bind.TransactOpts, *ethclient.Client, abi.ABI) {
 	client, err := ethclient.Dial("http://localhost:8545")
 	if err != nil {
 		// Handle error
 	}
-
 	address := common.HexToAddress(oracleAddress)
-	abiFile, err := ioutil.ReadFile("Wallet.abi")
-	contractAbi, err := abi.JSON(strings.NewReader(string(abiFile)))
+	abiFile, err := ioutil.ReadFile("Oracle.abi")
+	abiObject, err := abi.JSON(strings.NewReader(string(abiFile)))
 	if err != nil {
 		// Handle error
 		fmt.Println(err)
 	}
-
-	fmt.Println(address)
-	fmt.Println(client)
-	fmt.Println(contractAbi)
+	//fmt.Println(address)
+	//fmt.Println(client)
+	//fmt.Println(contractAbi)
 
 	contractInstance, err := oracle.NewWallet(address, client)
 	if err != nil {
 		// Handle error
 	}
 
-	fmt.Println(contractInstance)
+	//fmt.Println(contractInstance)
 	_privateKey, _, _publicAddress, _ := GenerateKeypairFromPrivateKeyHex(privateKey)
 	res, _ := BuildTransactionOptions(client, _publicAddress, _privateKey, 300000)
-	fmt.Println(res)
-	return err, contractInstance, _publicAddress, res
+	//fmt.Println(res)
+	return err, contractInstance, _publicAddress, res, client, abiObject
 }
 
 func CreateFunctionRequirementsForOracle(oracleAddress string, privateKey string) (error, *oracle.Oracle, common.Address, *bind.TransactOpts) {
@@ -78,25 +76,25 @@ func CreateFunctionRequirementsForOracle(oracleAddress string, privateKey string
 
 	address := common.HexToAddress(oracleAddress)
 	abiFile, err := ioutil.ReadFile("Oracle.abi")
-	contractAbi, err := abi.JSON(strings.NewReader(string(abiFile)))
+	_, err = abi.JSON(strings.NewReader(string(abiFile)))
 	if err != nil {
 		// Handle error
 		fmt.Println(err)
 	}
 
-	fmt.Println(address)
-	fmt.Println(client)
-	fmt.Println(contractAbi)
+	//fmt.Println(address)
+	//fmt.Println(client)
+	//fmt.Println(contractAbi)
 
 	contractInstance, err := oracle.NewOracle(address, client)
 	if err != nil {
 		// Handle error
 	}
 
-	fmt.Println(contractInstance)
+	//fmt.Println(contractInstance)
 	_privateKey, _, _publicAddress, _ := GenerateKeypairFromPrivateKeyHex(privateKey)
 	res, _ := BuildTransactionOptions(client, _publicAddress, _privateKey, 300000)
-	fmt.Println(res)
+	//fmt.Println(res)
 	return err, contractInstance, _publicAddress, res
 }
 
