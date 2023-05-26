@@ -4,25 +4,22 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6320321e-9e21-4775-a214-44d4a8a07a2a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ContractCaller.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Oracle.abi" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Oracle.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../contracts/Oracle.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../contracts/Oracle.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../contracts/build/Oracle.abi" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../contracts/build/Oracle.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../controller/OracleController.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../data/OracleData.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../go.mod" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../go.sum" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server.go" beforeDir="false" />
+    <list default="true" id="6320321e-9e21-4775-a214-44d4a8a07a2a" name="Changes" comment="Wallet contract has been changed and network listener has been started">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Oracle/go_contracts/Wallet.sol" beforeDir="false" afterPath="$PROJECT_DIR$/Oracle/go_contracts/Wallet.sol" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contracts/Wallet.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/Wallet.sol" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
   </component>
   <component name="GOROOT" url="file:///usr/local/go" />
   <component name="Git.Settings">
@@ -31,27 +28,43 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
   <component name="ProjectId" id="2PyIH92HhfQy1iXnlrad3sAFcTD" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "go.import.settings.migrated": "true",
-    "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "/Users/dogukangundogan",
-    "nodejs_package_manager_path": "npm"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.format.on.save.advertiser.fired&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/dogukangundogan/Desktop/Oracle/hardhat/Oracle/contractcaller&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;
   }
-}]]></component>
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Oracle/contractcaller" />
+      <recent name="$PROJECT_DIR$/Oracle/contracts" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Oracle/controller" />
+      <recent name="$PROJECT_DIR$/Oracle/contractcaller" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="hardhat" />
@@ -101,6 +114,12 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="file structure is changed." />
+    <MESSAGE value="Wallet is added." />
+    <MESSAGE value="Wallet contract has been changed and network listener has been started" />
+    <option name="LAST_COMMIT_MESSAGE" value="Wallet contract has been changed and network listener has been started" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

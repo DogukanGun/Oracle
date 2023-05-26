@@ -2,6 +2,7 @@ package main
 
 import (
 	"Oracle/controller"
+	"Oracle/subscriber"
 	"github.com/gin-gonic/gin"
 )
 
@@ -9,16 +10,32 @@ func main() {
 	server := gin.Default()
 	v1 := server.Group("/api/v1")
 	{
-		// Define the hello controller
-		hello := new(controller.OracleController)
-		// Define a GET request to call the Default
-		// method in controllers/hello.go
-		v1.POST("/lending/address", hello.SetLendingAddress)
-		v1.GET("/lending/address", hello.GetLendingAddress)
-		v1.POST("/interest-rate", hello.SetInterestRate)
-		v1.POST("/increase/barrowed-limit/:userId", hello.IncreaseTotalBarrowedLimitOf)
-		v1.POST("/decrease/barrowed-limit/:userId", hello.DecreaseTotalBarrowedLimitOf)
+		oracle := v1.Group("/oracle")
+		{
+			oracleController := new(controller.OracleController)
+			oracle.POST("/lending/address", oracleController.SetLendingAddress)
+			oracle.GET("/lending/address/:oracleAddress", oracleController.GetLendingAddress)
+			oracle.POST("/interest-rate", oracleController.SetInterestRate)
+			oracle.POST("/increase/barrowed-limit/:userId", oracleController.IncreaseTotalBarrowedLimitOf)
+			oracle.POST("/decrease/barrowed-limit/:userId", oracleController.DecreaseTotalBarrowedLimitOf)
+		}
 
+		wallet := v1.Group("/wallet")
+		{
+			walletController := new(controller.WalletController)
+			wallet.POST("/new", walletController.CreateUserAddress)
+			wallet.GET("/:userAddress", walletController.GetUserAssets)
+			wallet.POST("/new/asset", walletController.AddNewAsset)
+			wallet.POST("/deposit", walletController.Deposit)
+			wallet.POST("/withdraw", walletController.Withdraw)
+		}
+
+		networkListener := v1.Group("/listener")
+		{
+			networkListenerController := new(subscriber.NetworkListenerController)
+			networkListener.POST("/start", networkListenerController.ListenNetwork)
+		}
+		//TODO Lending pool routes
 	}
 
 	// Handle error response when a route is not defined
