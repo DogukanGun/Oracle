@@ -4,20 +4,9 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6320321e-9e21-4775-a214-44d4a8a07a2a" name="Changes" comment="Wallet is added.">
-      <change afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Oracle/go_contracts/build/Wallet.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Oracle/subscriber/NetworkListener.go" afterDir="false" />
+    <list default="true" id="6320321e-9e21-4775-a214-44d4a8a07a2a" name="Changes" comment="Wallet contract has been changed and network listener has been started">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Oracle/contractcaller/ContractCaller.go" beforeDir="false" afterPath="$PROJECT_DIR$/Oracle/contractcaller/ContractCaller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Oracle/controller/WalletController.go" beforeDir="false" afterPath="$PROJECT_DIR$/Oracle/controller/WalletController.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Oracle/go_contracts/Wallet.go" beforeDir="false" afterPath="$PROJECT_DIR$/Oracle/go_contracts/Wallet.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Oracle/go_contracts/Wallet.sol" beforeDir="false" afterPath="$PROJECT_DIR$/Oracle/go_contracts/Wallet.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Oracle/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/Oracle/server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/artifacts/contracts/Wallet.sol/Wallet.dbg.json" beforeDir="false" afterPath="$PROJECT_DIR$/artifacts/contracts/Wallet.sol/Wallet.dbg.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/artifacts/contracts/Wallet.sol/Wallet.json" beforeDir="false" afterPath="$PROJECT_DIR$/artifacts/contracts/Wallet.sol/Wallet.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cache/solidity-files-cache.json" beforeDir="false" afterPath="$PROJECT_DIR$/cache/solidity-files-cache.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/contracts/Wallet.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/Wallet.sol" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -129,7 +118,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="file structure is changed." />
     <MESSAGE value="Wallet is added." />
-    <option name="LAST_COMMIT_MESSAGE" value="Wallet is added." />
+    <MESSAGE value="Wallet contract has been changed and network listener has been started" />
+    <option name="LAST_COMMIT_MESSAGE" value="Wallet contract has been changed and network listener has been started" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

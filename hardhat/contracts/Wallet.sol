@@ -75,10 +75,10 @@ contract Wallet{
         }
     }
 
-    function withdrawAsset(address userAddress,uint128 sign,uint256 amount) public {
+    function withdrawAsset(address userAddress,uint128 sign,uint256 amount,uint128 chainId) public {
         UserWallet storage userWallet = userWallets[userAddress];
         for (uint256 i = 0; i < userWallet.assetCount; i++) {
-            if(userWallet.assets[i].sign == sign){
+            if(userWallet.assets[i].sign == sign && userWallet.assets[i].chainId == chainId){
                 userWallet.assets[i].amount = userWallet.assets[i].amount - amount;
             }
         }
